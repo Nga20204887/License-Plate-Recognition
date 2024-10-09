@@ -1,0 +1,78 @@
+# Convert labels to Retina License Plate format
+
+## Convert
+
+Check whether label in the same format with
+
+``` Shell
+python check_raw_label.py
+```
+
+Modify code in `convert_init.py` and run the following codes
+
+``` Shell
+python convert_stage_1.py
+python convert_stage_2.py
+python convert_stage_3.py
+python convert_stage_4.py
+```
+
+
+## Raw Label
+
+Raw labels with form `(class, x_center, y_center, w, h)`
+
+- `class = 0, 1, 2, 3` is boxes of corner
+- `class = 4` is boxes of license plate
+
+``` Shell
+0 0.658333 0.598658 0.03799979999999998 0.029856999999999967
+1 0.783333 0.60385 0.03799979999999998 0.029856999999999967
+2 0.78 0.658372 0.03799979999999998 0.029856999999999967
+3 0.656667 0.658372 0.03799979999999998 0.029856999999999967
+4 0.72 0.6285149999999999 0.12666599999999995 0.059713999999999934
+```
+## Stage 1
+
+Stage 1 labels with form `(class, x_center, y_center, w, h)` same as raw labels but use scale of image size
+
+``` Shell
+0 310.73317599999996 181.393374 17.93590559999999 9.04667099999999
+1 369.73317599999996 182.96655 17.93590559999999 9.04667099999999
+2 368.16 199.486716 17.93590559999999 9.04667099999999
+3 309.946824 199.486716 17.93590559999999 9.04667099999999
+4 339.84 190.44004499999997 59.78635199999997 18.09334199999998
+```
+
+## Stage 2
+
+Stage 2 label with first 4 lines are landmarks `(x, y)` and the last line is box of license plate `(x_corner, y_corner, w, h)`
+
+``` Shell
+310.73317599999996 181.393374
+369.73317599999996 182.96655
+368.16 199.486716
+309.946824 199.486716
+309 181 59 18
+```
+
+## Stage 3
+
+Stage 3 merges information from stage 2, add `conf` and `conf_label`
+
+``` Shell
+309 181 59 18 310.73317599999996 181.393374 0.0 369.73317599999996 182.96655 0.0 368.16 199.486716 0.0 309.946824 199.486716 0.0 1.0
+```
+
+## Stage 4
+
+Stage 4 adds filenames and merges all stage 3 labels to one file
+
+``` Shell
+# 10148.jpg
+158 157 86 28 158.12 163.300032 0.0 244.65317600000003 157.006722 0.0 242.29317600000002 179.819895 0.0 158.906824 185.32661700000003 0.0 1.0
+# 10149.jpg
+232 129 81 22 232.85317600000002 131.046591 0.0 313.88 129.473415 0.0 312.306824 150.713412 0.0 232.066824 152.28658800000002 0.0 1.0
+...
+```
+
